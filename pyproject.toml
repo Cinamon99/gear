@@ -1,0 +1,14 @@
+[project]
+name = "splatoon3-gear-bot"
+version = "1.0.0"
+description = "Splatoon 3 装备售卖 QQ 机器人"
+requires-python = ">=3.9"
+
+[tool.nonebot]
+adapters = [
+    { name = "OneBot V11", module_name = "nonebot.adapters.onebot.v11" }
+]
+plugins = [
+    "bot.plugins.gear_check",
+    "bot.plugins.commands",
+]

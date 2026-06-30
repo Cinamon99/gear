@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+macOS launchd 配置 — 每小时自动更新日历文件
+
+安装:
+  cp .github/macos/com.splatoon3.gear.plist ~/Library/LaunchAgents/
+  launchctl load ~/Library/LaunchAgents/com.splatoon3.gear.plist
+
+查看日志:
+  cat /tmp/splatoon3_gear.log
+
+卸载:
+  launchctl unload ~/Library/LaunchAgents/com.splatoon3.gear.plist
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.splatoon3.gear</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>-m</string>
+        <string>splatoon3_gear_reminders</string>
+        <string>-o</string>
+        <string>/Users/Shared/splatoon3_gear.ics</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/rose/Downloads/gear</string>
+
+    <!-- 每小时运行一次 -->
+    <key>StartInterval</key>
+    <integer>3600</integer>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/tmp/splatoon3_gear.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/tmp/splatoon3_gear.log</string>
+</dict>
+</plist>

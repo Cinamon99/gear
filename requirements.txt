@@ -1,0 +1,9 @@
+requests>=2.31
+pytz>=2023
+icalendar>=5.0
+json-repair>=0.40
+
+# ── QQ Bot 依赖 ────────────────────────────────────────────────────────
+nonebot2>=2.4.0
+nonebot-adapter-onebot>=2.4.0
+nonebot-plugin-apscheduler>=0.4.0
