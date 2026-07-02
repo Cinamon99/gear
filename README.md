@@ -64,7 +64,7 @@ launchctl load ~/Library/LaunchAgents/com.splatoon3.gear.plist
 3. 等几分钟让第一次 Action 跑完
 4. 手机日历添加订阅:
    ```
-   https://<你的用户名>.github.io/gear/gear.ics
+   https://Cinamon99.github.io/gear/gear.ics
    ```
    - **iOS**: 设置 → 日历 → 账户 → 添加订阅日历
    - **Android**: Google 日历 → 添加 → 来自 URL 的日历
