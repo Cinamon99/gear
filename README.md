@@ -72,7 +72,7 @@ launchctl load ~/Library/LaunchAgents/com.splatoon3.gear.plist
 
 之后每 2 小时自动更新,完全免费。
 
-### QQ Bot 部署
+### QQ Bot 部署 （尚未测试）
 
 需要一台 24h 在线的服务器(或 Oracle 免费云等)。详见 [DEPLOY.md](DEPLOY.md)。
 
