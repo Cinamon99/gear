@@ -41,6 +41,27 @@ jobs:
         run: |
           mkdir -p public
           python splatoon3_gear_reminders.py -o public/gear.ics
+          cp site/index.html public/index.html
+          echo "日历文件:"
+          ls -la public/gear.ics
+          echo "首页:"
+          ls -la public/index.html
+
+      - name: 上传 Pages 构件
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - name: 部署到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 生成日历文件
+        run: |
+          mkdir -p public
+          python splatoon3_gear_reminders.py -o public/gear.ics
           # 部署首页（解决根路径404）
           cp site/index.html public/index.html
           echo "📅 日历文件:"
