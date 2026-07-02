@@ -1,30 +1,17 @@
-# Splatoon 3 Gear Reminder — 自动生成 .ics 日历文件
-#
-# 工作流程:
-#   1. 每 2 小时(以及推送代码时)运行一次
-#   2. 拉取 Splatoon3 装备数据,生成 .ics 日历文件
-#   3. 部署到 GitHub Pages
-#
-# 订阅地址(开通 Pages 后):
-#   https://<你的用户名>.github.io/gear/gear.ics
-# ─────────────────────────────────────────────────────────────────────────
-
 name: gear-update
 
 on:
   schedule:
-    # 每 2 小时运行一次 (UTC 时间 = 北京时间 - 8)
     - cron: "0 */2 * * *"
   push:
     branches: [main]
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# 同时只运行一个 workflow
 concurrency:
   group: "pages"
   cancel-in-progress: true
@@ -34,6 +21,41 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 生成日历文件
+        run: |
+          mkdir -p public
+          python splatoon3_gear_reminders.py -o public/gear.ics
+          # 部署首页（解决根路径404）
+          cp site/index.html public/index.html
+          echo "📅 日历文件:"
+          ls -la public/gear.ics
+          echo "🏠 首页:"
+          ls -la public/index.html
+
+      - name: 上传 Pages 构件
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - name: 部署到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
