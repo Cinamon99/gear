@@ -71,10 +71,15 @@ class GearItem:
 
 
 # ── API 获取 ────────────────────────────────────────────────────────────
+HEADERS = {
+    "User-Agent": "Splatoon3GearBot/1.0 (https://github.com/Cinamon99/gear)"
+}
+
+
 def fetch_json(url: str, label: str = "data") -> dict[str, Any] | None:
     """获取 JSON 数据,失败时返回 None."""
     try:
-        resp = requests.get(url, timeout=15)
+        resp = requests.get(url, timeout=15, headers=HEADERS)
         resp.raise_for_status()
         logger.info("%s 获取成功 (%d bytes)", label, len(resp.content))
         return resp.json()
