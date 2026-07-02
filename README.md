@@ -1,6 +1,6 @@
 # Splatoon 3 Gear Reminder 🦑🎮
 
-[![CI](https://github.com/你的用户名/gear/actions/workflows/gear-update.yml/badge.svg)](https://github.com/你的用户名/gear/actions/workflows/gear-update.yml)
+[![CI](https://github.com/Cinamon99/gear/actions/workflows/gear-update.yml/badge.svg)](https://github.com/你的用户名/gear/actions/workflows/gear-update.yml)
 
 > Splatoon 3 装备售卖日历生成器 + QQ Bot 推送
 
@@ -32,7 +32,7 @@
 
 ```bash
 # 1. 安装
-git clone https://github.com/你的用户名/gear.git
+git clone https://github.com/Cinamon99/gear.git
 cd gear
 python3 -m venv venv
 source venv/bin/activate
