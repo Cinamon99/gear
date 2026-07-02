@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Splatoon 3 Gear Reminder · 装备售卖日历</title>
+  <style>
+    :root {
+      --bg: #fafbff;
+      --card-bg: #ffffff;
+      --text: #2a2d36;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --accent: #6366f1;
+      --accent-light: #eef2ff;
+      --success: #10b981;
+      --success-light: #ecfdf5;
+      --warning: #f59e0b;
+      --warning-light: #fffbeb;
+      --code-bg: #1e293b;
+      --code-text: #e2e8f0;
+      --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-lg: 0 4px 16px rgba(0,0,0,.06), 0 2px 6px rgba(0,0,0,.04);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    .container { max-width: 720px; margin: 0 auto; padding: 48px 24px; }
+    header { text-align: center; margin-bottom: 40px; }
+    .logo { font-size: 48px; margin-bottom: 12px; }
+    h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+    .subtitle { color: var(--muted); font-size: 15px; }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      transition: box-shadow .2s;
+    }
+    .card:hover { box-shadow: var(--shadow-lg); }
+    .card h2 { font-size: 18px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .status-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      display: inline-block; background: var(--success); animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .url-box {
+      background: var(--code-bg); color: var(--code-text);
+      border-radius: 10px; padding: 14px 18px;
+      font-family: "SF Mono", "Fira Code", monospace; font-size: 13px;
+      word-break: break-all; display: flex; align-items: center;
+      justify-content: space-between; gap: 12px;
+    }
+    .copy-btn {
+      background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.2);
+      color: #fff; padding: 6px 16px; border-radius: 7px; font-size: 13px;
+      cursor: pointer; white-space: nowrap; transition: all .2s;
+    }
+    .copy-btn:hover { background: rgba(255,255,255,.25); }
+    .copy-btn.copied { background: var(--success); border-color: var(--success); }
+    .steps { list-style: none; }
+    .steps li { padding: 10px 0; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 12px; }
+    .steps li:last-child { border-bottom: none; }
+    .step-num {
+      background: var(--accent-light); color: var(--accent);
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 14px; flex-shrink: 0;
+    }
+    .step-text { font-size: 14px; }
+    .step-text code { background: var(--accent-light); padding: 2px 6px; border-radius: 4px; font-size: 13px; color: var(--accent); }
+    .badge-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 14px; border-radius: 20px; font-size: 13px;
+      font-weight: 500; background: var(--success-light); color: var(--success);
+    }
+    .badge.warn { background: var(--warning-light); color: var(--warning); }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .skill-tag {
+      background: var(--accent-light); color: var(--accent);
+      padding: 5px 12px; border-radius: 8px; font-size: 13px; font-weight: 500;
+    }
+    footer {
+      text-align: center; color: var(--muted); font-size: 13px;
+      margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: var(--code-bg); color: #fff; padding: 10px 22px;
+      border-radius: 10px; font-size: 14px; opacity: 0;
+      transition: opacity .3s; pointer-events: none; z-index: 100;
+    }
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">🦑</div>
+      <h1>Splatoon 3 Gear Reminder</h1>
+      <p class="subtitle">斯普拉遁3 装备售卖日历 · 自动提醒购买</p>
+    </header>
+    <div class="card">
+      <h2><span class="status-dot"></span> 状态</h2>
+      <div class="badge-row">
+        <span class="badge">✅ 在线运行中</span>
+        <span class="badge warn">🕐 每 2 小时自动更新</span>
+      </div>
+      <p style="font-size:14px;color:var(--muted);margin-top:12px;">当前关注的技能：</p>
+      <div class="skill-tags">
+        <span class="skill-tag">🪖 回归头</span>
+        <span class="skill-tag">👟 隐跳鞋</span>
+        <span class="skill-tag">🏃 终场冲刺</span>
+        <span class="skill-tag">💨 走速衣服</span>
+        <span class="skill-tag">🏊 游速衣服</span>
+      </div>
+    </div>
+    <div class="card">
+      <h2>📅 订阅日历</h2>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:16px;">复制以下链接，添加到你手机的日历订阅中</p>
+      <div class="url-box">
+        <span id="subUrl">https://cinamon99.github.io/gear/gear.ics</span>
+        <button class="copy-btn" onclick="copyUrl()">复制</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>📱 如何添加订阅</h2>
+      <ol class="steps">
+        <li><span class="step-num">1</span><span class="step-text">点击上方 <code>复制</code> 按钮复制订阅链接</span></li>
+        <li><span class="step-num">2</span><span class="step-text"><strong>iOS</strong>: 设置 → 日历 → 账户 → 添加订阅日历 → 粘贴链接<br><strong>Android</strong>: Google 日历 → 添加 → 来自 URL → 粘贴链接<br><strong>macOS</strong>: 日历 App → 文件 → 新建日历订阅 → 粘贴链接</span></li>
+        <li><span class="step-num">3</span><span class="step-text">设置自动刷新频率为每 1-2 小时</span></li>
+        <li><span class="step-num">4</span><span class="step-text">装备店更新时，手机会自动收到提醒 🎉</span></li>
+      </ol>
+    </div>
+    <div class="card">
+      <h2>🔗 相关链接</h2>
+      <p style="font-size:14px;">
+        <a href="https://github.com/Cinamon99/gear" target="_blank">GitHub 仓库</a>
+        · <a href="https://github.com/Cinamon99/gear/actions" target="_blank">Actions 运行记录</a>
+        · <a href="https://splatoon3.ink" target="_blank">数据来源: splatoon3.ink</a>
+      </p>
+    </div>
+    <footer>
+      <p>数据每小时自动从 Splatoon3 游戏服务器同步</p>
+      <p style="margin-top:4px;">MIT · <a href="https://github.com/Cinamon99/gear">Cinamon99/gear</a></p>
+    </footer>
+  </div>
+  <div class="toast" id="toast">已复制到剪贴板 ✓</div>
+  <script>
+    function copyUrl() {
+      navigator.clipboard.writeText(document.getElementById('subUrl').textContent);
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = '已复制 ✓'; btn.classList.add('copied');
+      document.getElementById('toast').classList.add('show');
+      setTimeout(() => { btn.textContent = '复制'; btn.classList.remove('copied'); document.getElementById('toast').classList.remove('show'); }, 2000);
+    }
+  </script>
+</body>
+</html>
