@@ -100,6 +100,18 @@ gear/
 - **GitHub Actions + Pages** — 免费日历托管
 - **Lagrange.Core** — QQ 协议实现
 
+## 🙏 鸣谢 & 数据来源
+
+本项目所有装备数据均来自 **[Splatoon3.ink](https://splatoon3.ink)**，感谢 [Matt Isenhower](https://github.com/misenhower) 提供高质量、稳定更新的 API。
+
+使用此数据请遵守 [Data Access 政策](https://github.com/misenhower/splatoon3.ink/wiki/Data-Access)：
+
+- 请求间隔不少于每小时 1 次，鼓励缓存
+- 公众项目需注明数据来源
+- 基于此数据的产品须免费提供
+
+本项目 Actions 每 2 小时请求一次，请求头已设置 User-Agent 以便联系。
+
 ## 📜 许可
 
 MIT
